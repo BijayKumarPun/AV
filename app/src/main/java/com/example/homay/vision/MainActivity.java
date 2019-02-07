@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         previewClick.setOnClickListener(this);
         openCamera();
+
     }
 
     @Override
@@ -55,10 +56,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onPause() {
         super.onPause();
 
-        camera.release();
-        camPreview.getHolder().removeCallback(camPreview);  //remove callback to the holder
+       // camera.release();
+        //camPreview.getHolder().removeCallback(camPreview);  //remove callback to the holder
 
-        camera = null;
+        //camera = null;
         Log.i(TAG, "onPause: ");
 
 
