@@ -1,0 +1,17 @@
+[1mdiff --git a/.idea/assetWizardSettings.xml b/.idea/assetWizardSettings.xml[m
+[1mindex 5c8690d..c2754ba 100644[m
+[1m--- a/.idea/assetWizardSettings.xml[m
+[1m+++ b/.idea/assetWizardSettings.xml[m
+[36m@@ -28,8 +28,12 @@[m
+                         </option>[m
+                         <option name="values">[m
+                           <map>[m
+[32m+[m[32m                            <entry key="color" value="008486" />[m
+[32m+[m[32m                            <entry key="height" value="50" />[m
+                             <entry key="outputName" value="ic_fiber_manual_record_black_24dp" />[m
+[32m+[m[32m                            <entry key="overrideSize" value="true" />[m
+                             <entry key="sourceFile" value="$USER_HOME$" />[m
+[32m+[m[32m                            <entry key="width" value="50" />[m
+                           </map>[m
+                         </option>[m
+                       </PersistentState>[m
