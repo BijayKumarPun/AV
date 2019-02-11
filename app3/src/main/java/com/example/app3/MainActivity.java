@@ -1,11 +1,10 @@
 package com.example.app3;
 
-import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.hardware.Camera;
+import android.media.CamcorderProfile;
+import android.media.MediaRecorder;
+import android.media.MediaScannerConnection;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
@@ -14,17 +13,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import javax.security.auth.login.LoginException;
-
-import static android.provider.MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE;
-import static android.provider.MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO;
+import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -34,9 +27,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     FrameLayout frameLayout;
     Camera camera;
     CustomPreview customPreview;
-    Button buttonSnap;
+    Button buttonSnap, buttonRecord;
     ImageView imageView;
+    boolean RECORD_MODE = true;
 
+    //vide recording
+    MediaRecorder mediaRecorder;
 
 
     @Override
@@ -45,11 +41,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         frameLayout = findViewById(R.id.viewContainer);
         buttonSnap = findViewById(R.id.button_snap_);
+
+        buttonRecord = findViewById(R.id.button_record_);
+        mediaRecorder = new MediaRecorder();
+
+        buttonRecord.setOnClickListener(this);
         buttonSnap.setOnClickListener(this);
+
         imageView = findViewById(R.id.imageContainer);
         imageView.setOnClickListener(this);
         initCamera();
-
 
 
     }
@@ -75,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             initCamera();
         }
+
 
     }
 
@@ -114,7 +116,52 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.imageContainer:
                 imageView.setRotation(imageView.getRotation() + 90);
                 break;
+
+            case R.id.button_record_:
+
+
+                recordVideo(RECORD_MODE);
+
+                break;
         }
+    }
+
+    private void recordVideo(Boolean state) {
+
+        if (state) {
+            RECORD_MODE = false;
+
+            camera.unlock();
+            mediaRecorder.setCamera(camera);
+            mediaRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
+            mediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
+
+            mediaRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH));
+            File outPutFile = getFileName("VIDEO");
+
+            if (outPutFile == null) return;
+
+            mediaRecorder.setOutputFile(outPutFile.toString());
+            mediaRecorder.setPreviewDisplay(customPreview.getHolder().getSurface());
+        //    mediaRecorder.setVideoSize(500, 50);
+
+            try {
+                mediaRecorder.prepare();
+                mediaRecorder.start();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+        } else {
+            RECORD_MODE = true;
+            mediaRecorder.stop();
+            mediaRecorder.reset();
+            mediaRecorder.release();
+
+
+        }
+
     }
 
     private void takeSnapshot() {
@@ -128,9 +175,52 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void saveImageToStorage(byte[] data) {
-     //save
+
+        //save image to the directory
+
+        File file = getFileName("IMAGE");
+        if (file == null) return;
+        try {
+            FileOutputStream fileOutputStream = new FileOutputStream(file);
+            fileOutputStream.write(data);
+            Toast.makeText(this, "Successful", Toast.LENGTH_SHORT).show();
+            fileOutputStream.close();
+
+            MediaScannerConnection.scanFile(this, new String[]{file.getAbsolutePath()}, new String[]{"image/jpeg"}, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
     }
 
+    private File getFileName(String TYPE) {
+
+        Log.i(TAG, "getFileName: ");
+
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            Log.i(TAG, "getFileName: inside mounted");
+
+            File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "MeroApp");
+            if (!file.exists()) {
+
+                file.mkdirs();
+            }
+            if (file.exists()) {
+                Log.i(TAG, "getFileName: File exists");
+                if (TYPE.equals("IMAGE")) {
+                    Log.i(TAG, "getFileName: inside IMAGE type");
+                    return new File(file.getPath() + File.separator + "randomized.jpg");
+                } else {
+                    Log.i(TAG, "getFileName: inside VIDEO type");
+                    return new File(file.getPath() + File.separator + "myvideo.mp4");
+                }
+            }
+            Log.i(TAG, "getFileName: file still doesn't exist");
+
+        }
+        return null;
+    }
 
 
 }

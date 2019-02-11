@@ -1,27 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-   <FrameLayout
-       android:layout_width="match_parent"
-       android:layout_height="match_parent"
-       android:id="@+id/viewContainer"/>
-   <ImageView
-       android:layout_width="match_parent"
-       android:layout_height="match_parent"
-       android:id="@+id/imageContainer"/>
+    <FrameLayout
+        android:id="@+id/viewContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
-   <Button
-       android:background="@drawable/button_selector"
-       android:layout_width="wrap_content"
-       android:id="@+id/button_snap_"
-       android:layout_centerHorizontal="true"
-       android:layout_alignParentBottom="true"
-       android:layout_marginBottom="30dp"
-       android:layout_height="wrap_content" />
+    <ImageView
+        android:id="@+id/imageContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_alignParentBottom="true"
+    android:layout_centerHorizontal="true"
+    android:layout_height="wrap_content">
+    <Button
+        android:id="@+id/button_snap_"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/button_selector" />
+
+    <Button
+        android:id="@+id/button_record_"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="30dp"
+        android:layout_toEndOf="@id/button_snap_"
+        android:layout_toRightOf="@id/button_snap_"
+        android:background="@drawable/button_selector" />
+</LinearLayout>
 
 </RelativeLayout>
